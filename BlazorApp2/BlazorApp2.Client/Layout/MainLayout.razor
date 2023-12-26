@@ -34,6 +34,7 @@
                     if (firstRender)
                     {
                         await JsRuntime.InvokeVoidAsync("eval","window.THREEAPI.globals.changeCanvas('bg', 'cv')");
+                        //< --- canvas does not get set by js script.
                         await JsRuntime.InvokeVoidAsync("window.THREEAPI.create3DWindow");
                     }
                 }

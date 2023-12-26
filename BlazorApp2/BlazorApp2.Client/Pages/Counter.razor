@@ -1,18 +1,56 @@
 ﻿@page "/counter"
+@inject IJSRuntime JsRuntime
+@using System.Text.Json.Nodes;
+@using System.Text.Json;
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
-
+<p role="status">Current animation: @currentCount</p>
+@{
+    foreach (var k in animationNames)
+    {
+        @k
+        <br />
+    }
+}
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
     private int currentCount = 0;
+    private int index = 0;
+    private List<string> animationNames = [];
 
     private void IncrementCount()
     {
+        if(currentCount>= animationNames.Count)
+        {
+            currentCount = 0;
+        }
         currentCount++;
+        SetAnimation();
     }
+    private Task SetAnimation()
+    {
+        return JsRuntime.InvokeVoidAsync("window.THREEAPI.app.ChangeAnimation", currentCount).AsTask();
+
+    }
+    protected override async Task OnAfterRenderAsync(bool loaded)
+    {
+        // JsonSerializer.Deserialize<List<string>>(jsonString);
+
+        // var keys =  await JsRuntime.InvokeAsync<string>("eval", "JSON.stringify(Array.from(window.THREEAPI.globals.animationList.keys()))");
+        var resultJson = await JsRuntime.InvokeAsync<string>("eval", "var keys = []; for (var key in window.THREEAPI.globals.animationList) { keys.push(window.THREEAPI.globals.animationList[key]['name']); } JSON.stringify(keys);");
+        var keys = JsonSerializer.Deserialize<List<string>>(resultJson);
+
+        await JsRuntime.InvokeVoidAsync("console.log", keys);
+
+
+   
+        animationNames= keys;
+        //window.THREEAPI.globals.animationList
+
+    }
+    
 }
