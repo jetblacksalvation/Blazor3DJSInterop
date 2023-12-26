@@ -16,9 +16,12 @@
         </div>
 
         <article class="content px-4">
+            <div id="cv">
+                <div id="root">
+                </div>
+            </div>
 
             @Body
-
 
 
             @code {
@@ -30,14 +33,14 @@
                 {
                     if (firstRender)
                     {
-                        await JsRuntime.InvokeVoidAsync("window.THREEAPI.createRoot");
+                        await JsRuntime.InvokeVoidAsync("eval","window.THREEAPI.globals.changeCanvas('bg', 'cv')");
+                        await JsRuntime.InvokeVoidAsync("window.THREEAPI.create3DWindow");
                     }
                 }
 
             }
 
         </article>
-        <div id="root">
-        </div>
+
     </main>
 </div>
