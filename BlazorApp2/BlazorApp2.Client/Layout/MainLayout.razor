@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JsRuntime
+@rendermode InteractiveWebAssembly
+
+
+<div class="page">
+
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+
+            @Body
+
+
+
+            @code {
+
+                public bool firstRender = false;
+
+
+                protected override async Task OnAfterRenderAsync(bool firstRender)
+                {
+                    if (firstRender)
+                    {
+                        await JsRuntime.InvokeVoidAsync("window.THREEAPI.createRoot");
+                    }
+                }
+
+            }
+
+        </article>
+        <div id="root">
+        </div>
+    </main>
+</div>
